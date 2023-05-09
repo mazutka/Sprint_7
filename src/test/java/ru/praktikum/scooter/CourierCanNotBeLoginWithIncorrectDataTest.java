@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
@@ -34,10 +36,10 @@ public class CourierCanNotBeLoginWithIncorrectDataTest {
     @Parameterized.Parameters
     public static Object[][] orderData() {
         return new Object[][]{
-                {"password", RandomStringUtils.randomAlphabetic(10), 404,"Учетная запись не найдена"},
-                {"login", RandomStringUtils.randomAlphabetic(10), 404, "Учетная запись не найдена"},
-                {"password", null, 400, "Недостаточно данных для входа"},
-                {"login", null, 400, "Недостаточно данных для входа"}
+                {"password", RandomStringUtils.randomAlphabetic(10), SC_NOT_FOUND,"Учетная запись не найдена"},
+                {"login", RandomStringUtils.randomAlphabetic(10), SC_NOT_FOUND, "Учетная запись не найдена"},
+                {"password", null, SC_BAD_REQUEST, "Недостаточно данных для входа"},
+                {"login", null, SC_BAD_REQUEST, "Недостаточно данных для входа"}
         };
     }
 
@@ -45,7 +47,7 @@ public class CourierCanNotBeLoginWithIncorrectDataTest {
     public void setUp(){
         courierClient = new CourierClient();
         Courier courier = CourierGenerator.getRandom();
-        courierClient.create(courier);
+        courierClient.createCourier(courier);
         credentials = CourierCredentials.from(courier);
         ValidatableResponse loginResponse = courierClient.login(credentials);
         courierId = loginResponse.extract().path("id");
@@ -68,8 +70,8 @@ public class CourierCanNotBeLoginWithIncorrectDataTest {
         ValidatableResponse loginResponse = courierClient.login(credentials);
         int actStatusCode = loginResponse.extract().statusCode();
         String actMessage = loginResponse.extract().path("message");
-        assertEquals(actStatusCode, expStatusCode);
-        assertEquals(actMessage,expMessage);
+        assertEquals(expStatusCode, actStatusCode);
+        assertEquals(expMessage, actMessage);
 
     }
 

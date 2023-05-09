@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -19,7 +20,7 @@ public class OrdersListTest {
         //создаем курьера и запоминаем его id
         courierClient = new CourierClient();
         Courier courier = CourierGenerator.getRandom();
-        courierClient.create(courier);
+        courierClient.createCourier(courier);
         CourierCredentials credentials = CourierCredentials.from(courier);
         ValidatableResponse loginResponse = courierClient.login(credentials);
         courierId = loginResponse.extract().path("id");
@@ -46,7 +47,7 @@ public class OrdersListTest {
         ValidatableResponse responseOrdersList = orderClient.ordersByCourier(courierId);
         int statusCode = responseOrdersList.extract().statusCode();
         OrdersList actOrdersList = responseOrdersList.extract().body().as(OrdersList.class);
-        assertEquals(statusCode,200);
+        assertEquals(SC_OK,statusCode);
         assertNotNull(actOrdersList);
     }
 }

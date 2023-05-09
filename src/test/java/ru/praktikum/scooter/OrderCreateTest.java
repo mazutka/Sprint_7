@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import java.util.Arrays;
 
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class OrderCreateTest {
@@ -43,7 +44,7 @@ public class OrderCreateTest {
         ValidatableResponse orderResponse = orderClient.order(order);
         int statusCode = orderResponse.extract().statusCode();
         int orderId = orderResponse.extract().path("track");
-        assertEquals(statusCode,201);
+        assertEquals(SC_CREATED, statusCode);
         assertNotEquals(0,orderId);
 
     }
