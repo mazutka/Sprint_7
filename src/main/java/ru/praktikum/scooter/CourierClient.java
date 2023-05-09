@@ -8,7 +8,7 @@ public class CourierClient extends RestClient{
     private static final String COURIER_PATH = "/api/v1/courier";
     private static final String COURIER_LOGIN_PATH = "/api/v1/courier/login";
     private static final String COURIER_DELETE_PATH = "/api/v1/courier/%s";
-    public ValidatableResponse create(Courier courier){
+    public ValidatableResponse createCourier(Courier courier){
         return given()
                 .spec(getBaseSpec())
                 .body(courier)

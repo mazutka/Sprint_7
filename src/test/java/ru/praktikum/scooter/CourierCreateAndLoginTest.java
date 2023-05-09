@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -44,16 +46,16 @@ public class CourierCreateAndLoginTest {
     @Step("Логин - {this.courier.login}/ Пароль - {this.courier.password}/ Имя - {this.courier.firstName}")
     public void courierCanBeCreatedAndLogged(){
 
-        ValidatableResponse createResponse = courierClient.create(courier);
+        ValidatableResponse createResponse = courierClient.createCourier(courier);
         int statusCode = createResponse.extract().statusCode();
         boolean isCourierCreated =createResponse.extract().path("ok");
-        assertEquals(statusCode,201);
+        assertEquals(SC_CREATED, statusCode);
         assertTrue(isCourierCreated);
 
         ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courier));
         statusCode = loginResponse.extract().statusCode();
         courierId = loginResponse.extract().path("id");
-        assertEquals(statusCode,200);
+        assertEquals(SC_OK, statusCode);
         assertNotEquals(0,courierId);
 
     }

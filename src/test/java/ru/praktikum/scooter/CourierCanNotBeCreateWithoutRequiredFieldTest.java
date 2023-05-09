@@ -3,12 +3,12 @@ package ru.praktikum.scooter;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
-import jdk.jfr.Description;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.junit.Assert.assertEquals;
 @RunWith(Parameterized.class)
 public class CourierCanNotBeCreateWithoutRequiredFieldTest {
@@ -37,12 +37,12 @@ public class CourierCanNotBeCreateWithoutRequiredFieldTest {
     @Step("Логин - {this.courier.login}/ Пароль - {this.courier.password}")
     public void CourierCanNotBeCreateWithoutRequiredField(){
 
-        ValidatableResponse createResponse = courierClient.create(courier);
+        ValidatableResponse createResponse = courierClient.createCourier(courier);
 
         int statusCode = createResponse.extract().statusCode();
         String message =createResponse.extract().path("message");
-        assertEquals(statusCode,400);
-        assertEquals(message,"Недостаточно данных для создания учетной записи");
+        assertEquals(SC_BAD_REQUEST, statusCode);
+        assertEquals("Недостаточно данных для создания учетной записи", message);
 
     }
 

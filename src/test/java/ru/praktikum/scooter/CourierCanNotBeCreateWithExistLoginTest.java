@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.apache.http.HttpStatus.SC_CONFLICT;
 import static org.junit.Assert.assertEquals;
 
 public class CourierCanNotBeCreateWithExistLoginTest {
@@ -17,7 +18,7 @@ public class CourierCanNotBeCreateWithExistLoginTest {
     public void setUp(){
         courierClient = new CourierClient();
         courier = CourierGenerator.getRandom();
-        courierClient.create(courier);
+        courierClient.createCourier(courier);
         ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courier));
         courierId = loginResponse.extract().path("id");
     }
@@ -30,12 +31,12 @@ public class CourierCanNotBeCreateWithExistLoginTest {
     @Test
     @DisplayName("API. POST '/courier'. Нельзя создать уже существующего курьера")
     public void CourierCanNotBeCreateWithExistLogin(){
-        ValidatableResponse createResponse = courierClient.create(courier);
+        ValidatableResponse createResponse = courierClient.createCourier(courier);
 
         int statusCode = createResponse.extract().statusCode();
         String message =createResponse.extract().path("message");
-        assertEquals(statusCode,409);
-        assertEquals(message,"Этот логин уже используется. Попробуйте другой.");
+        assertEquals(SC_CONFLICT, statusCode);
+        assertEquals("Этот логин уже используется. Попробуйте другой.", message);
     }
 
 
